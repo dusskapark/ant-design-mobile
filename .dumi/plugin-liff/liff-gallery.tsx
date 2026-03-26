@@ -119,7 +119,6 @@ const LiffHomeGrid = ({
           </div>
         )
       })}
-      <SafeArea position='bottom' />
     </div>
   )
 }
@@ -191,7 +190,6 @@ const LiffSearch = ({
           </IndexBar.Panel>
         ))}
       </IndexBar>
-      <SafeArea position='bottom' />
     </>
   )
 }
@@ -248,7 +246,6 @@ const LiffSettings = ({
           if (val[0]) setLang(val[0] as Lang)
         }}
       />
-      <SafeArea position='bottom' />
     </>
   )
 }
@@ -294,10 +291,7 @@ export default (props: any) => {
   // Demo view
   if (currentComponent && currentDemoIndex !== null) {
     return (
-      <div
-        style={{ height: window.innerHeight }}
-        className={styles.liffGallery}
-      >
+      <div style={{ height: '100dvh' }} className={styles.liffGallery}>
         {demoPaths.length > 1 && (
           <div className={styles.demoSegment}>
             <CapsuleTabs
@@ -337,7 +331,7 @@ export default (props: any) => {
 
   // Home / Search / Settings view
   return (
-    <div style={{ height: window.innerHeight }} className={styles.liffGallery}>
+    <div style={{ height: '100dvh' }} className={styles.liffGallery}>
       <div className={styles.body}>
         {activeTab === 'home' && (
           <LiffHomeGrid
@@ -364,18 +358,21 @@ export default (props: any) => {
           />
         )}
       </div>
-      <TabBar
-        activeKey={activeTab}
-        onChange={key => setActiveTab(key as ActiveTab)}
-      >
-        <TabBar.Item key='home' icon={<AppstoreOutlined />} title='Home' />
-        <TabBar.Item key='search' icon={<SearchOutlined />} title='Search' />
-        <TabBar.Item
-          key='settings'
-          icon={<SettingOutlined />}
-          title='Settings'
-        />
-      </TabBar>
+      <div className={styles.tabBarWrapper}>
+        <TabBar
+          activeKey={activeTab}
+          onChange={key => setActiveTab(key as ActiveTab)}
+        >
+          <TabBar.Item key='home' icon={<AppstoreOutlined />} title='Home' />
+          <TabBar.Item key='search' icon={<SearchOutlined />} title='Search' />
+          <TabBar.Item
+            key='settings'
+            icon={<SettingOutlined />}
+            title='Settings'
+          />
+        </TabBar>
+        <SafeArea position='bottom' />
+      </div>
     </div>
   )
 }

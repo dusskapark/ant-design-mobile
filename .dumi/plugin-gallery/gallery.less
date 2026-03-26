@@ -106,6 +106,17 @@ body {
   flex-direction: column;
 }
 
+// Main nav — tab bar + bottom safe area
+.tabBarWrapper {
+  flex: none;
+  background: var(--adm-color-background, #fff);
+  border-top: solid 1px #eee;
+
+  [data-prefers-color-scheme='dark'] & {
+    border-top-color: #3e3f40;
+  }
+}
+
 // Demo view — CapsuleTabs segment bar
 .demoSegment {
   flex: none;
