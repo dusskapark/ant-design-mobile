@@ -9,6 +9,8 @@ import classNames from 'classnames'
 import { useDebounceEffect } from 'ahooks'
 import { cloneDeep } from 'lodash'
 
+type Lang = 'zh' | 'en'
+
 type ComponentGroup = {
   title: string
   children: {
@@ -17,32 +19,66 @@ type ComponentGroup = {
   }[]
 }
 
-const components: ComponentGroup[] =
-  ComponentConfig['menus']['zh']['/zh/components']
+const componentsByLang: Record<Lang, ComponentGroup[]> = {
+  zh: ComponentConfig['menus']['zh']['/zh/components'],
+  en: ComponentConfig['menus']['en']['/components'],
+}
 
 const demos = Object.keys(DemosConfig)
 
-const componentToDemoPaths: Record<string, string[]> = {}
-const componentToTitle: Record<string, string> = {}
-
-components.forEach(group => {
-  group.children.forEach(item => {
-    const keyArrs = item.path.split('/')
-    const key = keyArrs[keyArrs.length - 1]
-    componentToDemoPaths[key] = demos.filter(val =>
-      val.startsWith(`${key}-demo`)
-    )
-    componentToTitle[key] = item.title
+const buildMaps = (components: ComponentGroup[]) => {
+  const toDemoPaths: Record<string, string[]> = {}
+  const toTitle: Record<string, string> = {}
+  components.forEach(group => {
+    group.children.forEach(item => {
+      const keyArrs = item.path.split('/')
+      const key = keyArrs[keyArrs.length - 1]
+      toDemoPaths[key] = demos.filter(val => val.startsWith(`${key}-demo`))
+      toTitle[key] = item.title
+    })
   })
-})
+  return { toDemoPaths, toTitle }
+}
+
+const mapsByLang: Record<Lang, ReturnType<typeof buildMaps>> = {
+  zh: buildMaps(componentsByLang.zh),
+  en: buildMaps(componentsByLang.en),
+}
+
+const i18n: Record<
+  Lang,
+  {
+    guide1: string
+    guide2: string
+    searchPlaceholder: string
+    toggleLabel: string
+  }
+> = {
+  zh: {
+    guide1: '下面是一些 Ant Design Mobile 的组件 demo，可以点进去试一试',
+    guide2: '如果你想查阅完整的组件文档，请在桌面浏览器中访问：',
+    searchPlaceholder: '搜索组件',
+    toggleLabel: 'EN',
+  },
+  en: {
+    guide1: 'Here are some Ant Design Mobile component demos. Tap to try them.',
+    guide2: 'For the full documentation, visit in a desktop browser:',
+    searchPlaceholder: 'Search components',
+    toggleLabel: '中文',
+  },
+}
 
 export default props => {
+  const [lang, setLang] = useState<Lang>('en')
   const [currentDemoIndex, setCurrentDemoIndex] = useState<number | null>(null)
   const [currentComponent, setCurrentComponent] = useState('')
   const [title, setTitle] = useState('Ant Design Mobile')
   const [searchValue, setSearchValue] = useState<string>('')
-  const [componentGroups, setComponentGroups] = useState(components)
+  const [componentGroups, setComponentGroups] = useState(componentsByLang['en'])
   const { history, match } = props
+
+  const { toDemoPaths, toTitle } = mapsByLang[lang]
+  const t = i18n[lang]
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -54,8 +90,8 @@ export default props => {
   useLayoutEffect(() => {
     const { component = '' } = match.params
     setCurrentComponent(component)
-    setTitle(componentToTitle[component] || 'Ant Design Mobile')
-  }, [match.params])
+    setTitle(toTitle[component] || 'Ant Design Mobile')
+  }, [match.params, lang])
 
   useLayoutEffect(() => {
     if (!currentComponent) {
@@ -65,9 +101,18 @@ export default props => {
     }
   }, [currentComponent])
 
+  // Reset search and update groups when language changes
+  useEffect(() => {
+    setSearchValue('')
+    setComponentGroups(componentsByLang[lang])
+    if (currentComponent) {
+      setTitle(toTitle[currentComponent] || 'Ant Design Mobile')
+    }
+  }, [lang])
+
   useDebounceEffect(
     () => {
-      let filterGroups = cloneDeep(components)
+      let filterGroups = cloneDeep(componentsByLang[lang])
       filterGroups.forEach(group => {
         group.children = group.children.filter(item =>
           item.title.toLowerCase().includes(searchValue.toLowerCase())
@@ -75,7 +120,7 @@ export default props => {
       })
       setComponentGroups(filterGroups.filter(group => group.children.length))
     },
-    [searchValue],
+    [searchValue, lang],
     {
       wait: 200,
       leading: false,
@@ -83,11 +128,20 @@ export default props => {
     }
   )
 
+  const langToggle = currentDemoIndex === null && (
+    <a
+      className={styles.langToggle}
+      onClick={() => setLang(l => (l === 'zh' ? 'en' : 'zh'))}
+    >
+      {t.toggleLabel}
+    </a>
+  )
+
   const demoSwitcher = currentComponent && currentDemoIndex !== null && (
     <Popover.Menu
       trigger='click'
       placement='bottomRight'
-      actions={componentToDemoPaths[currentComponent].map((_, index) => ({
+      actions={toDemoPaths[currentComponent].map((_, index) => ({
         text: `Demo${index + 1}`,
         onClick: () => {
           setCurrentDemoIndex(index)
@@ -95,7 +149,7 @@ export default props => {
       }))}
     >
       <a className={styles.demoSwitcher}>
-        {currentDemoIndex + 1} / {componentToDemoPaths[currentComponent].length}
+        {currentDemoIndex + 1} / {toDemoPaths[currentComponent].length}
       </a>
     </Popover.Menu>
   )
@@ -108,7 +162,7 @@ export default props => {
           onBack={() => {
             history.push('/gallery')
           }}
-          right={demoSwitcher}
+          right={demoSwitcher || langToggle}
         >
           {title}
         </NavBar>
@@ -116,10 +170,7 @@ export default props => {
       {currentComponent && currentDemoIndex !== null && (
         <div className={classNames(styles.body, styles.demoBody)}>
           <iframe
-            src={
-              '/~demos/' +
-              componentToDemoPaths[currentComponent][currentDemoIndex]
-            }
+            src={'/~demos/' + toDemoPaths[currentComponent][currentDemoIndex]}
             style={{
               width: window.innerWidth,
               height: '100%',
@@ -135,9 +186,9 @@ export default props => {
             alt='logo'
             className={styles.logo}
           />
-          <p>下面是一些 Ant Design Mobile 的组件 demo，可以点进去试一试</p>
+          <p>{t.guide1}</p>
           <p>
-            如果你想查阅完整的组件文档，请在桌面浏览器中访问：
+            {t.guide2}{' '}
             <a href={window.location.origin} target='_blank'>
               {window.location.origin}
             </a>
@@ -145,7 +196,7 @@ export default props => {
         </div>
         <div className={styles.search}>
           <SearchBar
-            placeholder='搜索组件'
+            placeholder={t.searchPlaceholder}
             value={searchValue}
             onChange={val => setSearchValue(val)}
           />
@@ -157,7 +208,7 @@ export default props => {
               {group.children.map(item => {
                 const keyArrs = item.path.split('/')
                 const key = keyArrs[keyArrs.length - 1]
-                const demoPaths = componentToDemoPaths[key]
+                const demoPaths = toDemoPaths[key]
                 if (demoPaths && demoPaths.length === 0) return null
                 return (
                   <List.Item
