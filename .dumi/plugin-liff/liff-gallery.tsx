@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import liff from '@line/liff'
-import { SafeArea, TabBar } from 'antd-mobile'
+import { Mask, SafeArea, SpinLoading, TabBar } from 'antd-mobile'
 import {
   AppstoreOutlined,
   SearchOutlined,
@@ -27,6 +27,9 @@ export default (props: any) => {
   const [profile, setProfile] = useState<LiffProfile | null>(null)
   const [liffVersion, setLiffVersion] = useState<string | null>(null)
   const [lineVersion, setLineVersion] = useState<string | null>(null)
+  const [isDeepLink] = useState(
+    () => !!new URLSearchParams(window.location.search).get('component')
+  )
   const state = useGalleryState(props.history, props.match, '/liff')
   const { currentComponent, currentDemoIndex, toDemoPaths, title } = state
   const demoPaths = currentComponent
@@ -64,6 +67,8 @@ export default (props: any) => {
     document.title = title
   }, [title])
 
+  const showLoadingMask = isDeepLink && liffStatus !== 'ready'
+
   return (
     <LiffProvider
       lang={state.lang}
@@ -74,6 +79,18 @@ export default (props: any) => {
       liffVersion={liffVersion}
       lineVersion={lineVersion}
     >
+      <Mask visible={showLoadingMask}>
+        <div
+          style={{
+            height: '100dvh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <SpinLoading color='white' style={{ '--size': '48px' }} />
+        </div>
+      </Mask>
       {currentComponent && currentDemoIndex !== null ? (
         <LiffDemoView
           demoPaths={demoPaths}
