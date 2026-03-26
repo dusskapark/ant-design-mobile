@@ -1,4 +1,9 @@
 {
   "buildCommand": "yarn build-doc",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--openssl-legacy-provider"
+    }
+  }
 }
