@@ -81,7 +81,12 @@ const config: IConfig = {
       ],
     },
   },
-  plugins: ['./.dumi/plugin-gallery/index.ts', './.dumi/plugin-theme/index.ts'],
+  plugins: [
+    './.dumi/plugin-gallery/index.ts',
+    './.dumi/plugin-liff/index.ts',
+    './.dumi/plugin-grab/index.ts',
+    './.dumi/plugin-theme/index.ts',
+  ],
   // ssr: {},
   exportStatic: {},
   dynamicImport: {},
