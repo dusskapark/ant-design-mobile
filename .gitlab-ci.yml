@@ -1,0 +1,12 @@
+pages:
+  stage: deploy
+  script:
+    - node --version
+    - yarn install --frozen-lockfile
+    - NODE_OPTIONS=--openssl-legacy-provider yarn build-doc
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
