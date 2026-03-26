@@ -4,6 +4,7 @@ import liff from '@line/liff'
 import {
   Button,
   CapsuleTabs,
+  ConfigProvider,
   Grid,
   IndexBar,
   List,
@@ -13,6 +14,8 @@ import {
   Switch,
   TabBar,
 } from 'antd-mobile'
+import enUS from 'antd-mobile/es/locales/en-US'
+import zhCN from 'antd-mobile/es/locales/zh-CN'
 import {
   AppstoreOutlined,
   SearchOutlined,
@@ -288,91 +291,105 @@ export default (props: any) => {
     }
   }
 
+  const locale = state.lang === 'en' ? enUS : zhCN
+
   // Demo view
   if (currentComponent && currentDemoIndex !== null) {
     return (
-      <div style={{ height: '100dvh' }} className={styles.liffGallery}>
-        {demoPaths.length > 1 && (
-          <div className={styles.demoSegment}>
-            <CapsuleTabs
-              activeKey={String(currentDemoIndex)}
-              onChange={key => state.setCurrentDemoIndex(Number(key))}
-            >
-              {demoPaths.map((_, i) => (
-                <CapsuleTabs.Tab key={String(i)} title={`Demo ${i + 1}`} />
-              ))}
-            </CapsuleTabs>
+      <ConfigProvider locale={locale}>
+        <div style={{ height: '100dvh' }} className={styles.liffGallery}>
+          {demoPaths.length > 1 && (
+            <div className={styles.demoSegment}>
+              <CapsuleTabs
+                activeKey={String(currentDemoIndex)}
+                onChange={key => state.setCurrentDemoIndex(Number(key))}
+              >
+                {demoPaths.map((_, i) => (
+                  <CapsuleTabs.Tab key={String(i)} title={`Demo ${i + 1}`} />
+                ))}
+              </CapsuleTabs>
+            </div>
+          )}
+          <div className={classNames(styles.body, styles.demoBody)}>
+            <iframe
+              src={'/~demos/' + demoPaths[currentDemoIndex]}
+              style={{
+                width: window.innerWidth,
+                height: '100%',
+                border: 'none',
+              }}
+            />
           </div>
-        )}
-        <div className={classNames(styles.body, styles.demoBody)}>
-          <iframe
-            src={'/~demos/' + demoPaths[currentDemoIndex]}
-            style={{ width: window.innerWidth, height: '100%', border: 'none' }}
-          />
+          <div className={styles.shareBar}>
+            <Button
+              block
+              style={
+                {
+                  '--background-color': '#06C755',
+                  '--border-color': '#06C755',
+                  '--text-color': '#fff',
+                } as React.CSSProperties
+              }
+              onClick={shareToLine}
+            >
+              Share to LINE
+            </Button>
+          </div>
         </div>
-        <div className={styles.shareBar}>
-          <Button
-            block
-            style={
-              {
-                '--background-color': '#06C755',
-                '--border-color': '#06C755',
-                '--text-color': '#fff',
-              } as React.CSSProperties
-            }
-            onClick={shareToLine}
-          >
-            Share to LINE
-          </Button>
-        </div>
-      </div>
+      </ConfigProvider>
     )
   }
 
   // Home / Search / Settings view
   return (
-    <div style={{ height: '100dvh' }} className={styles.liffGallery}>
-      <div className={styles.body}>
-        {activeTab === 'home' && (
-          <LiffHomeGrid
-            lang={state.lang}
-            liffStatus={liffStatus}
-            t={state.t}
-            goToComponent={state.goToComponent}
-            toDemoPaths={toDemoPaths}
-          />
-        )}
-        {activeTab === 'search' && (
-          <LiffSearch
-            lang={state.lang}
-            goToComponent={state.goToComponent}
-            toDemoPaths={toDemoPaths}
-          />
-        )}
-        {activeTab === 'settings' && (
-          <LiffSettings
-            lang={state.lang}
-            setLang={state.setLang}
-            isDark={state.isDark}
-            toggleTheme={state.toggleTheme}
-          />
-        )}
+    <ConfigProvider locale={locale}>
+      <div style={{ height: '100dvh' }} className={styles.liffGallery}>
+        <div className={styles.body}>
+          {activeTab === 'home' && (
+            <LiffHomeGrid
+              lang={state.lang}
+              liffStatus={liffStatus}
+              t={state.t}
+              goToComponent={state.goToComponent}
+              toDemoPaths={toDemoPaths}
+            />
+          )}
+          {activeTab === 'search' && (
+            <LiffSearch
+              lang={state.lang}
+              goToComponent={state.goToComponent}
+              toDemoPaths={toDemoPaths}
+            />
+          )}
+          {activeTab === 'settings' && (
+            <LiffSettings
+              lang={state.lang}
+              setLang={state.setLang}
+              isDark={state.isDark}
+              toggleTheme={state.toggleTheme}
+            />
+          )}
+        </div>
+        <div className={styles.tabBarWrapper}>
+          <TabBar
+            activeKey={activeTab}
+            onChange={key => setActiveTab(key as ActiveTab)}
+          >
+            <TabBar.Item key='home' icon={<AppstoreOutlined />} title='Home' />
+            <TabBar.Item
+              key='search'
+              icon={<SearchOutlined />}
+              title='Search'
+            />
+            <TabBar.Item
+              key='settings'
+              icon={<SettingOutlined />}
+              title='Settings'
+            />
+          </TabBar>
+          <SafeArea position='bottom' />
+        </div>
       </div>
-      <div className={styles.tabBarWrapper}>
-        <TabBar
-          activeKey={activeTab}
-          onChange={key => setActiveTab(key as ActiveTab)}
-        >
-          <TabBar.Item key='home' icon={<AppstoreOutlined />} title='Home' />
-          <TabBar.Item key='search' icon={<SearchOutlined />} title='Search' />
-          <TabBar.Item
-            key='settings'
-            icon={<SettingOutlined />}
-            title='Settings'
-          />
-        </TabBar>
-        <SafeArea position='bottom' />
-      </div>
-    </div>
+    </ConfigProvider>
   )
 }
