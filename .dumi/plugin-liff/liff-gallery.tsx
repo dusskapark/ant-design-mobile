@@ -41,6 +41,10 @@ export default (props: any) => {
       .catch(() => setLiffStatus('error'))
   }, [])
 
+  useEffect(() => {
+    document.title = title
+  }, [title])
+
   return (
     <LiffProvider
       lang={state.lang}
@@ -55,6 +59,7 @@ export default (props: any) => {
           setCurrentDemoIndex={state.setCurrentDemoIndex}
           title={title}
           currentComponent={currentComponent}
+          liffStatus={liffStatus}
         />
       ) : (
         <div style={{ height: '100dvh' }} className={styles.liffGallery}>

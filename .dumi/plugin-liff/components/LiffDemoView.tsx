@@ -1,5 +1,7 @@
 import React from 'react'
-import { Button, CapsuleTabs } from 'antd-mobile'
+// @ts-ignore
+import liff from '@line/liff'
+import { Button, CapsuleTabs, Toast } from 'antd-mobile'
 import classNames from 'classnames'
 import styles from '../../plugin-gallery/gallery.less'
 
@@ -9,6 +11,7 @@ interface Props {
   setCurrentDemoIndex: (i: number) => void
   title: string
   currentComponent: string
+  liffStatus: 'idle' | 'ready' | 'error'
 }
 
 export const LiffDemoView = ({
@@ -17,20 +20,25 @@ export const LiffDemoView = ({
   setCurrentDemoIndex,
   title,
   currentComponent,
+  liffStatus,
 }: Props) => {
   const shareToLine = async () => {
+    if (liffStatus !== 'ready' || !liff.isInClient()) {
+      const url = `${window.location.origin}/liff/${currentComponent}`
+      await navigator.clipboard.writeText(url).catch(() => {})
+      Toast.show({ content: 'Link copied!', position: 'bottom' })
+      return
+    }
     try {
-      // @ts-ignore
-      const liff = (await import('@line/liff')).default
-      if (!liff.isInClient()) return
       await liff.sendMessages([
         {
           type: 'text',
           text: `Check out the ${title} component:\n${window.location.origin}/liff/${currentComponent}`,
         },
       ])
+      Toast.show({ content: 'Shared to LINE!', position: 'bottom' })
     } catch {
-      /* ignore */
+      Toast.show({ content: 'Failed to share', position: 'bottom' })
     }
   }
 
