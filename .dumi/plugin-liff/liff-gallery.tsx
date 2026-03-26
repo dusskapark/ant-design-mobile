@@ -49,7 +49,11 @@ export default (props: any) => {
         // Carousel button deep link: navigate directly to a component via ?component= param
         const params = new URLSearchParams(window.location.search)
         const deepLink = params.get('component')
-        if (deepLink) state.goToComponent(deepLink)
+        if (deepLink) {
+          // replaceState로 ?component= 제거 후 push → 뒤로가기 시 홈으로 돌아가도록
+          window.history.replaceState({}, '', window.location.pathname)
+          state.goToComponent(deepLink)
+        }
         return liff.getProfile()
       })
       .then((p: LiffProfile) => setProfile(p))
