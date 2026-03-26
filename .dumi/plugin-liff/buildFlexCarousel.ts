@@ -42,8 +42,8 @@ export function buildFlexCarousel(
   const category = getCategoryName(componentKey)
   const total = demoPaths.length
 
-  // LIFF URL에 component 쿼리 파라미터를 붙여서 딥링크
-  // liff-gallery.tsx에서 init 완료 후 해당 파라미터를 읽어 컴포넌트로 이동
+  // Append ?component= query param to the LIFF URL for deep linking
+  // liff-gallery.tsx reads this param after init and navigates to the component
   const liffUrl = `https://liff.line.me/${LIFF_ID}?component=${componentKey}`
 
   const bubbles = demoPaths.slice(0, 12).map((_, i) => ({

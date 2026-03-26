@@ -46,7 +46,7 @@ export default (props: any) => {
         setLineVersion(liff.getLineVersion())
         const appLang: string = liff.getAppLanguage() ?? ''
         state.setLang(appLang.startsWith('zh') ? 'zh' : 'en')
-        // 캐러셀 버튼 딥링크: ?component=button 파라미터로 바로 컴포넌트로 이동
+        // Carousel button deep link: navigate directly to a component via ?component= param
         const params = new URLSearchParams(window.location.search)
         const deepLink = params.get('component')
         if (deepLink) state.goToComponent(deepLink)

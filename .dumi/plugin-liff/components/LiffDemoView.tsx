@@ -43,7 +43,7 @@ export const LiffDemoView = ({
         Toast.show({ content: 'Shared to chat!', position: 'bottom' })
         return
       } catch {
-        // INVALID_RECEIVER 등 실패 시 shareTargetPicker로 fallback
+        // Fallback to shareTargetPicker on failure (e.g. INVALID_RECEIVER)
       }
     }
 

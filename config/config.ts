@@ -11,7 +11,12 @@ if (shouldDisableCSSVar) {
 const pxToRem = require('postcss-pxtorem')
 const postcssDisableCSSVars = require('../scripts/postcss-disable-css-vars.js')
 
+const { version: antdMobileVersion } = require('../package.json')
+
 const config: IConfig = {
+  define: {
+    'process.env.ANTD_MOBILE_VERSION': JSON.stringify(antdMobileVersion),
+  },
   mode: 'site',
   title: 'Ant Design Mobile',
   logo: 'https://gw.alipayobjects.com/zos/bmw-prod/b874caa9-4458-412a-9ac6-a61486180a62.svg',
