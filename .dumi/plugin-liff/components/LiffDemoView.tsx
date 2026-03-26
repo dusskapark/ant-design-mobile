@@ -1,7 +1,7 @@
 import React from 'react'
 // @ts-ignore
 import liff from '@line/liff'
-import { Button, CapsuleTabs, Toast } from 'antd-mobile'
+import { Button, Segmented, Toast } from 'antd-mobile'
 import classNames from 'classnames'
 import styles from '../../plugin-gallery/gallery.less'
 import { buildFlexCarousel } from '../buildFlexCarousel'
@@ -63,14 +63,15 @@ export const LiffDemoView = ({
     <div style={{ height: '100dvh' }} className={styles.liffGallery}>
       {demoPaths.length > 1 && (
         <div className={styles.demoSegment}>
-          <CapsuleTabs
-            activeKey={String(currentDemoIndex)}
-            onChange={key => setCurrentDemoIndex(Number(key))}
-          >
-            {demoPaths.map((_, i) => (
-              <CapsuleTabs.Tab key={String(i)} title={`Demo ${i + 1}`} />
-            ))}
-          </CapsuleTabs>
+          <Segmented
+            block
+            value={currentDemoIndex}
+            onChange={val => setCurrentDemoIndex(Number(val))}
+            options={demoPaths.map((_, i) => ({
+              label: `Demo ${i + 1}`,
+              value: i,
+            }))}
+          />
         </div>
       )}
       <div className={classNames(styles.body, styles.demoBody)}>

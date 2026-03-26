@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react'
-import { ConfigProvider } from 'antd-mobile'
+import React, { createContext, useContext, useEffect } from 'react'
+import { setDefaultConfig } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import zhCN from 'antd-mobile/es/locales/zh-CN'
 import { type Lang } from '../../plugin-gallery/use-gallery-state'
@@ -39,7 +39,10 @@ export const LiffProvider = ({
   lineVersion,
   children,
 }: Props) => {
-  const locale = lang === 'en' ? enUS : zhCN
+  useEffect(() => {
+    setDefaultConfig({ locale: lang === 'zh' ? zhCN : enUS })
+  }, [lang])
+
   return (
     <LiffContext.Provider
       value={{
@@ -52,7 +55,7 @@ export const LiffProvider = ({
         lineVersion,
       }}
     >
-      <ConfigProvider locale={locale}>{children}</ConfigProvider>
+      {children}
     </LiffContext.Provider>
   )
 }
