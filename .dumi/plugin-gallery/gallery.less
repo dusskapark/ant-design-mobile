@@ -11,6 +11,10 @@ body {
 .header {
   flex: none;
   border-bottom: solid 1px #eee;
+
+  [data-prefers-color-scheme='dark'] & {
+    border-bottom-color: #3e3f40;
+  }
 }
 
 .body {
@@ -37,6 +41,10 @@ body {
   font-size: 15px;
   padding: 12px;
   border-bottom: solid 1px #eee;
+
+  [data-prefers-color-scheme='dark'] & {
+    border-bottom-color: #3e3f40;
+  }
 }
 
 .logo {
@@ -45,15 +53,82 @@ body {
   margin: 0 auto;
 }
 
-.demoSwitcher {
-  font-size: 15px;
-}
-
-.langToggle {
-  font-size: 15px;
-  cursor: pointer;
-}
-
 .search {
   padding: 12px;
+}
+
+// NavBar right area — holds locale + theme toggles side by side
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// Locale toggle — pill style matching dumi LocaleSelect
+.localeToggle {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid #dadadf;
+  border-radius: 14px;
+  font-size: 14px;
+  color: #7b7f8d;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  user-select: none;
+
+  &:active {
+    background-color: #f5f5f5;
+  }
+
+  [data-prefers-color-scheme='dark'] & {
+    border-color: #464646;
+    color: #b3b3b3;
+
+    &:active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Demo switcher link (unchanged)
+.demoSwitcher {
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+// Theme toggle — circular icon button matching dumi Dark button
+.themeToggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #dadadf;
+  border-radius: 50%;
+  background-color: #f5f7fa;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  flex-shrink: 0;
+
+  svg {
+    fill: #314659;
+    transition: transform 0.2s;
+  }
+
+  &:active svg {
+    transform: scale(1.2);
+  }
+
+  [data-prefers-color-scheme='dark'] & {
+    border-color: #464646;
+    background-color: #141414;
+
+    svg {
+      fill: #e6e6e6;
+    }
+  }
 }
