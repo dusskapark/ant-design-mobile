@@ -4,6 +4,7 @@ import liff from '@line/liff'
 import { Button, CapsuleTabs, Toast } from 'antd-mobile'
 import classNames from 'classnames'
 import styles from '../../plugin-gallery/gallery.less'
+import { buildFlexCarousel } from '../buildFlexCarousel'
 
 interface Props {
   demoPaths: string[]
@@ -23,22 +24,38 @@ export const LiffDemoView = ({
   liffStatus,
 }: Props) => {
   const shareToLine = async () => {
+    const url = `${window.location.origin}/liff/${currentComponent}`
+
     if (liffStatus !== 'ready' || !liff.isInClient()) {
-      const url = `${window.location.origin}/liff/${currentComponent}`
       await navigator.clipboard.writeText(url).catch(() => {})
       Toast.show({ content: 'Link copied!', position: 'bottom' })
       return
     }
+
+    const flexMsg = buildFlexCarousel(title, currentComponent, demoPaths)
+    const context = liff.getContext()
+    const isInChat =
+      context?.type && !['none', 'external'].includes(context.type)
+
+    if (isInChat) {
+      try {
+        await liff.sendMessages([flexMsg])
+        Toast.show({ content: 'Shared to chat!', position: 'bottom' })
+        return
+      } catch {
+        // INVALID_RECEIVER 등 실패 시 shareTargetPicker로 fallback
+      }
+    }
+
     try {
-      await liff.sendMessages([
-        {
-          type: 'text',
-          text: `Check out the ${title} component:\n${window.location.origin}/liff/${currentComponent}`,
-        },
-      ])
+      await liff.shareTargetPicker([flexMsg])
       Toast.show({ content: 'Shared to LINE!', position: 'bottom' })
-    } catch {
-      Toast.show({ content: 'Failed to share', position: 'bottom' })
+    } catch (e: any) {
+      Toast.show({
+        content: `Failed: ${e?.message ?? e}`,
+        position: 'bottom',
+        duration: 5000,
+      })
     }
   }
 
