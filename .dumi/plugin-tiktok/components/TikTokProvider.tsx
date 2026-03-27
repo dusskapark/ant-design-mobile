@@ -18,6 +18,7 @@ interface TikTokContextValue {
   profile: TikTokProfile | null
   ttVersion: string | null
   isInApp: boolean
+  clientKey: string
 }
 
 const TikTokContext = createContext<TikTokContextValue>(null!)
@@ -36,6 +37,7 @@ export const TikTokProvider = ({
   profile,
   ttVersion,
   isInApp,
+  clientKey,
   children,
 }: Props) => {
   useEffect(() => {
@@ -52,6 +54,7 @@ export const TikTokProvider = ({
         profile,
         ttVersion,
         isInApp,
+        clientKey,
       }}
     >
       {children}

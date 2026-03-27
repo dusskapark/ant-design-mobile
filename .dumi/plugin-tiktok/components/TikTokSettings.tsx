@@ -4,8 +4,16 @@ import { type Lang } from '../../plugin-gallery/use-gallery-state'
 import { useTikTokContext } from './TikTokProvider'
 
 export const TikTokSettings = () => {
-  const { lang, setLang, isDark, toggleTheme, profile, ttVersion, isInApp } =
-    useTikTokContext()
+  const {
+    lang,
+    setLang,
+    isDark,
+    toggleTheme,
+    profile,
+    ttVersion,
+    isInApp,
+    clientKey,
+  } = useTikTokContext()
   const [pickerVisible, setPickerVisible] = useState(false)
   const langLabel = lang === 'en' ? 'English' : '中文'
 
@@ -92,16 +100,23 @@ export const TikTokSettings = () => {
         >
           Platform
         </List.Item>
-        <List.Item
-          extra={<span style={{ color: '#888' }}>›</span>}
-          onClick={() => (window.location.href = '/privacy-policy')}
-        >
+        {clientKey && (
+          <List.Item
+            extra={
+              <span
+                style={{ color: '#888', fontSize: 12, fontFamily: 'monospace' }}
+              >
+                {clientKey.slice(0, 8)}…
+              </span>
+            }
+          >
+            Client Key
+          </List.Item>
+        )}
+        <List.Item onClick={() => (window.location.href = '/privacy-policy')}>
           Privacy Policy
         </List.Item>
-        <List.Item
-          extra={<span style={{ color: '#888' }}>›</span>}
-          onClick={() => (window.location.href = '/terms')}
-        >
+        <List.Item onClick={() => (window.location.href = '/terms')}>
           Terms of Service
         </List.Item>
       </List>

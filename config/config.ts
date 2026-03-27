@@ -16,6 +16,9 @@ const { version: antdMobileVersion } = require('../package.json')
 const config: IConfig = {
   define: {
     'process.env.ANTD_MOBILE_VERSION': JSON.stringify(antdMobileVersion),
+    'process.env.UMI_APP_TIKTOK_CLIENT_KEY': JSON.stringify(
+      process.env.UMI_APP_TIKTOK_CLIENT_KEY || ''
+    ),
   },
   mode: 'site',
   title: 'Ant Design Mobile',

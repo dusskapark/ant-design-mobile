@@ -16,6 +16,8 @@ import { TikTokSettings } from './components/TikTokSettings'
 // TikTok Mini App global
 declare const tt: any
 
+const CLIENT_KEY = process.env.UMI_APP_TIKTOK_CLIENT_KEY || ''
+
 type ActiveTab = 'home' | 'search' | 'settings'
 
 /** Detect TikTok Mini App environment */
@@ -98,6 +100,7 @@ export default (props: any) => {
       profile={profile}
       ttVersion={ttVersion}
       isInApp={isInApp}
+      clientKey={CLIENT_KEY}
     >
       {currentComponent && currentDemoIndex !== null ? (
         <TikTokDemoView
