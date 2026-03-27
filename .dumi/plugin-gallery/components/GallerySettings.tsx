@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { List, Picker, Switch } from 'antd-mobile'
 import { type Lang } from '../use-gallery-state'
+import { PrivacyPolicy } from './PrivacyPolicy'
+import { TermsOfService } from './TermsOfService'
 
 interface Props {
   lang: Lang
@@ -16,6 +18,8 @@ export const GallerySettings = ({
   toggleTheme,
 }: Props) => {
   const [pickerVisible, setPickerVisible] = useState(false)
+  const [ppVisible, setPpVisible] = useState(false)
+  const [tosVisible, setTosVisible] = useState(false)
   const langLabel = lang === 'en' ? 'English' : '中文'
 
   return (
@@ -55,7 +59,28 @@ export const GallerySettings = ({
         >
           Platform
         </List.Item>
+        <List.Item
+          extra={<span style={{ color: '#888' }}>›</span>}
+          onClick={() => setPpVisible(true)}
+        >
+          Privacy Policy
+        </List.Item>
+        <List.Item
+          extra={<span style={{ color: '#888' }}>›</span>}
+          onClick={() => setTosVisible(true)}
+        >
+          Terms of Service
+        </List.Item>
       </List>
+      <PrivacyPolicy
+        visible={ppVisible}
+        onClose={() => setPpVisible(false)}
+        platform='web'
+      />
+      <TermsOfService
+        visible={tosVisible}
+        onClose={() => setTosVisible(false)}
+      />
       <Picker
         columns={[
           [
