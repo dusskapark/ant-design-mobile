@@ -15,8 +15,17 @@ import { GallerySettings } from './components/GallerySettings'
 
 type ActiveTab = 'home' | 'search' | 'settings'
 
+const ACTIVE_TAB_KEY = 'gallery-active-tab'
+
 export default (props: any) => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home')
+  const [activeTab, setActiveTab] = useState<ActiveTab>(
+    () => (sessionStorage.getItem(ACTIVE_TAB_KEY) as ActiveTab | null) ?? 'home'
+  )
+
+  const handleTabChange = (key: ActiveTab) => {
+    setActiveTab(key)
+    sessionStorage.setItem(ACTIVE_TAB_KEY, key)
+  }
   const state = useGalleryState(props.history, props.match, '/gallery')
   const { currentComponent, currentDemoIndex, setCurrentDemoIndex, title } =
     state
@@ -33,7 +42,7 @@ export default (props: any) => {
       <div style={{ height: '100dvh' }} className={styles.gallery}>
         <div className={styles.header}>
           <NavBar
-            backArrow={<LeftOutlined />}
+            backIcon={<LeftOutlined />}
             onBack={state.goBack}
             right={
               demoPaths.length > 1 ? (
@@ -72,7 +81,7 @@ export default (props: any) => {
   return (
     <div style={{ height: '100dvh' }} className={styles.gallery}>
       <div className={styles.header}>
-        <NavBar>{title}</NavBar>
+        <NavBar backIcon={false}>{title}</NavBar>
       </div>
       <div className={styles.body}>
         {activeTab === 'home' && (
@@ -103,7 +112,7 @@ export default (props: any) => {
       <div className={styles.tabBarWrapper}>
         <TabBar
           activeKey={activeTab}
-          onChange={key => setActiveTab(key as ActiveTab)}
+          onChange={key => handleTabChange(key as ActiveTab)}
         >
           <TabBar.Item key='home' icon={<AppstoreOutlined />} title='Home' />
           <TabBar.Item key='search' icon={<SearchOutlined />} title='Search' />
