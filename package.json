@@ -43,6 +43,7 @@
     "size-limit:ci": "size-limit --json",
     "generate-tokens": "node scripts/generate-tokens.js",
     "start": "NODE_OPTIONS=--openssl-legacy-provider dumi dev",
+    "minis:debug": "node scripts/minis-debug.js",
     "test": "jest",
     "ci-install-react-19": "pnpm i react@19 react-dom@19",
     "test-with-coverage": "jest --coverage"

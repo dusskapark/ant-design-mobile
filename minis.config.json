@@ -1,0 +1,19 @@
+{
+  "navbar": {
+    "lightModeBgColor": "#ffffff",
+    "darkModeBgColor": "#000000"
+  },
+  "dev": {
+    "port": "8001",
+    "host": "localhost",
+    "entry": "/tiktok",
+    "clientKey": "sbaw8855rchj90ib1z"
+  },
+  "build": {
+    "outputDir": "dist",
+    "htmlEntry": "dist/index.html"
+  },
+  "domain": {
+    "trustedDomains": ["https://ant-design-mobile.vercel.app"]
+  }
+}
