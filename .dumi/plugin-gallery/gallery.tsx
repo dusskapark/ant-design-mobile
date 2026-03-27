@@ -1,4 +1,4 @@
 import React from 'react'
-import GalleryCore from './gallery-core'
+import GalleryWeb from './gallery-web'
 
-export default (props: any) => <GalleryCore {...props} basePath='/gallery' />
+export default (props: any) => <GalleryWeb {...props} />

@@ -1,20 +1,13 @@
 import React, { useState } from 'react'
 import { Image, List, Picker, Switch } from 'antd-mobile'
 import { type Lang } from '../../plugin-gallery/use-gallery-state'
-import { useLiffContext } from './LiffProvider'
+import { useTikTokContext } from './TikTokProvider'
 import { PrivacyPolicy } from '../../plugin-gallery/components/PrivacyPolicy'
 import { TermsOfService } from '../../plugin-gallery/components/TermsOfService'
 
-export const LiffSettings = () => {
-  const {
-    lang,
-    setLang,
-    isDark,
-    toggleTheme,
-    profile,
-    liffVersion,
-    lineVersion,
-  } = useLiffContext()
+export const TikTokSettings = () => {
+  const { lang, setLang, isDark, toggleTheme, profile, ttVersion, isInApp } =
+    useTikTokContext()
   const [pickerVisible, setPickerVisible] = useState(false)
   const [ppVisible, setPpVisible] = useState(false)
   const [tosVisible, setTosVisible] = useState(false)
@@ -24,11 +17,11 @@ export const LiffSettings = () => {
     <>
       {profile && (
         <List header='Profile'>
-          {profile.pictureUrl && (
+          {profile.avatarUrl && (
             <List.Item
               prefix={
                 <Image
-                  src={profile.pictureUrl}
+                  src={profile.avatarUrl}
                   width={40}
                   height={40}
                   style={{ borderRadius: '50%' }}
@@ -36,34 +29,25 @@ export const LiffSettings = () => {
                 />
               }
             >
-              {profile.displayName}
+              {profile.nickName}
             </List.Item>
           )}
-          {!profile.pictureUrl && (
+          {!profile.avatarUrl && (
             <List.Item
-              extra={
-                <span style={{ color: '#888' }}>{profile.displayName}</span>
-              }
+              extra={<span style={{ color: '#888' }}>{profile.nickName}</span>}
             >
-              Name
+              Nickname
             </List.Item>
           )}
-          <List.Item
-            extra={
-              <span style={{ color: '#888', fontSize: 12 }}>
-                {profile.userId}
-              </span>
-            }
-          >
-            User ID
-          </List.Item>
-          {profile.statusMessage && (
+          {profile.openId && (
             <List.Item
               extra={
-                <span style={{ color: '#888' }}>{profile.statusMessage}</span>
+                <span style={{ color: '#888', fontSize: 12 }}>
+                  {profile.openId}
+                </span>
               }
             >
-              Status
+              Open ID
             </List.Item>
           )}
         </List>
@@ -98,11 +82,19 @@ export const LiffSettings = () => {
         >
           antd-mobile
         </List.Item>
-        <List.Item extra={<span style={{ color: '#888' }}>{liffVersion}</span>}>
-          LIFF SDK
-        </List.Item>
-        <List.Item extra={<span style={{ color: '#888' }}>{lineVersion}</span>}>
-          LINE
+        {ttVersion && (
+          <List.Item extra={<span style={{ color: '#888' }}>{ttVersion}</span>}>
+            TikTok SDK
+          </List.Item>
+        )}
+        <List.Item
+          extra={
+            <span style={{ color: '#888' }}>
+              {isInApp ? 'In-App' : 'Browser'}
+            </span>
+          }
+        >
+          Platform
         </List.Item>
         <List.Item
           extra={<span style={{ color: '#888' }}>›</span>}
@@ -120,7 +112,7 @@ export const LiffSettings = () => {
       <PrivacyPolicy
         visible={ppVisible}
         onClose={() => setPpVisible(false)}
-        platform='liff'
+        platform='tiktok'
       />
       <TermsOfService
         visible={tosVisible}

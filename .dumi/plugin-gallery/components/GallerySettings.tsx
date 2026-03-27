@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
-import { Image, List, Picker, Switch } from 'antd-mobile'
-import { type Lang } from '../../plugin-gallery/use-gallery-state'
-import { useLiffContext } from './LiffProvider'
-import { PrivacyPolicy } from '../../plugin-gallery/components/PrivacyPolicy'
-import { TermsOfService } from '../../plugin-gallery/components/TermsOfService'
+import { List, Picker, Switch } from 'antd-mobile'
+import { type Lang } from '../use-gallery-state'
+import { PrivacyPolicy } from './PrivacyPolicy'
+import { TermsOfService } from './TermsOfService'
 
-export const LiffSettings = () => {
-  const {
-    lang,
-    setLang,
-    isDark,
-    toggleTheme,
-    profile,
-    liffVersion,
-    lineVersion,
-  } = useLiffContext()
+interface Props {
+  lang: Lang
+  setLang: React.Dispatch<React.SetStateAction<Lang>>
+  isDark: boolean
+  toggleTheme: () => void
+}
+
+export const GallerySettings = ({
+  lang,
+  setLang,
+  isDark,
+  toggleTheme,
+}: Props) => {
   const [pickerVisible, setPickerVisible] = useState(false)
   const [ppVisible, setPpVisible] = useState(false)
   const [tosVisible, setTosVisible] = useState(false)
@@ -22,52 +24,6 @@ export const LiffSettings = () => {
 
   return (
     <>
-      {profile && (
-        <List header='Profile'>
-          {profile.pictureUrl && (
-            <List.Item
-              prefix={
-                <Image
-                  src={profile.pictureUrl}
-                  width={40}
-                  height={40}
-                  style={{ borderRadius: '50%' }}
-                  fit='cover'
-                />
-              }
-            >
-              {profile.displayName}
-            </List.Item>
-          )}
-          {!profile.pictureUrl && (
-            <List.Item
-              extra={
-                <span style={{ color: '#888' }}>{profile.displayName}</span>
-              }
-            >
-              Name
-            </List.Item>
-          )}
-          <List.Item
-            extra={
-              <span style={{ color: '#888', fontSize: 12 }}>
-                {profile.userId}
-              </span>
-            }
-          >
-            User ID
-          </List.Item>
-          {profile.statusMessage && (
-            <List.Item
-              extra={
-                <span style={{ color: '#888' }}>{profile.statusMessage}</span>
-              }
-            >
-              Status
-            </List.Item>
-          )}
-        </List>
-      )}
       <List header='Theme Settings'>
         <List.Item
           extra={<span style={{ color: '#888' }}>{langLabel}</span>}
@@ -98,11 +54,10 @@ export const LiffSettings = () => {
         >
           antd-mobile
         </List.Item>
-        <List.Item extra={<span style={{ color: '#888' }}>{liffVersion}</span>}>
-          LIFF SDK
-        </List.Item>
-        <List.Item extra={<span style={{ color: '#888' }}>{lineVersion}</span>}>
-          LINE
+        <List.Item
+          extra={<span style={{ color: '#888' }}>Web Application</span>}
+        >
+          Platform
         </List.Item>
         <List.Item
           extra={<span style={{ color: '#888' }}>›</span>}
@@ -120,7 +75,7 @@ export const LiffSettings = () => {
       <PrivacyPolicy
         visible={ppVisible}
         onClose={() => setPpVisible(false)}
-        platform='liff'
+        platform='web'
       />
       <TermsOfService
         visible={tosVisible}
