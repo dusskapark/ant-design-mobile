@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { Image, List, Picker, Switch } from 'antd-mobile'
 import { type Lang } from '../../plugin-gallery/use-gallery-state'
 import { useLiffContext } from './LiffProvider'
-import { PrivacyPolicy } from '../../plugin-gallery/components/PrivacyPolicy'
-import { TermsOfService } from '../../plugin-gallery/components/TermsOfService'
 
 export const LiffSettings = () => {
   const {
@@ -16,8 +14,6 @@ export const LiffSettings = () => {
     lineVersion,
   } = useLiffContext()
   const [pickerVisible, setPickerVisible] = useState(false)
-  const [ppVisible, setPpVisible] = useState(false)
-  const [tosVisible, setTosVisible] = useState(false)
   const langLabel = lang === 'en' ? 'English' : '中文'
 
   return (
@@ -104,28 +100,13 @@ export const LiffSettings = () => {
         <List.Item extra={<span style={{ color: '#888' }}>{lineVersion}</span>}>
           LINE
         </List.Item>
-        <List.Item
-          extra={<span style={{ color: '#888' }}>›</span>}
-          onClick={() => setPpVisible(true)}
-        >
+        <List.Item onClick={() => (window.location.href = '/privacy-policy')}>
           Privacy Policy
         </List.Item>
-        <List.Item
-          extra={<span style={{ color: '#888' }}>›</span>}
-          onClick={() => setTosVisible(true)}
-        >
+        <List.Item onClick={() => (window.location.href = '/terms')}>
           Terms of Service
         </List.Item>
       </List>
-      <PrivacyPolicy
-        visible={ppVisible}
-        onClose={() => setPpVisible(false)}
-        platform='liff'
-      />
-      <TermsOfService
-        visible={tosVisible}
-        onClose={() => setTosVisible(false)}
-      />
       <Picker
         columns={[
           [

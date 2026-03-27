@@ -91,6 +91,7 @@ const config: IConfig = {
     './.dumi/plugin-liff/index.ts',
     './.dumi/plugin-grab/index.ts',
     './.dumi/plugin-tiktok/index.ts',
+    './.dumi/plugin-legal/index.ts',
     './.dumi/plugin-theme/index.ts',
   ],
   // ssr: {},
